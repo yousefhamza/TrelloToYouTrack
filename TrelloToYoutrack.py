@@ -128,7 +128,7 @@ def main():
 
     issues = getIssuesArray(cards)
 
-    ImportToYoutrack(username, password, instance_name, project_ID, None)
+    ImportToYoutrack(username, password, instance_name, project_ID, issues)
 
     print 'Done importing to youtrack :)'
 

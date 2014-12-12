@@ -18,10 +18,10 @@ export PYTHONPATH=$PYTHONPATH:[The URL of python folder in site-packages]
 How to run:
 
 
-$python TrelloToYoutrack.py [Trello Key] [Trello token] [Board name] [List name] [Youtrack instance name] [Project ID]
+$python TrelloToYoutrack.py [Trello Key] [Trello token] [Board name] [List name*] [Youtrack instance name] [Project ID]
 [username] [Password]
 
-
+*If you want to import all the board put list name as all.
 
 
 
