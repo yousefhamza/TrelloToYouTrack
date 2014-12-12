@@ -100,6 +100,7 @@ def ImportToYoutrack(username, password, youtrack_instance_name, project_id, iss
 
 def main():
     if len(sys.argv) != 9:
+        print 'inappropriate number of arguments.. closing'
         return
 
     key = sys.argv[1]
