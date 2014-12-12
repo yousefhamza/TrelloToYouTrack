@@ -1,0 +1,40 @@
+Dependencies: youtrack python client
+
+youtrack python APIs you can download it from Here: https://github.com/JetBrains/youtrack-rest-python-library
+
+Put the folder in your site-packages directory for python (only python 2.x supported for now)
+e.g. : /Library/Python/2.7/site-packages/youtrack-rest-python-library
+
+If want to use it on ur own always,Then add it's directory url in your .profile/.bash_profile document
+to PYTHONPATH like that:
+
+export PYTHONPATH=$PYTHONPATH:[The URL of python folder in site-packages]
+
+
+
+
+
+
+How to run:
+
+
+$python TrelloToYoutrack.py [Trello Key] [Trello token] [Board name] [List name] [Youtrack instance name] [Project ID]
+[username] [Password]
+
+
+
+
+
+
+
+To get Trello key and token:
+
+from here: https://trello.com/1/appKey/generate
+
+the key available at the top and the token you have to request it -only avaiable for certain period of time-
+then after allowing it will appear in the link at the bottom most of the page
+
+
+
+
+Please report any wanted feature or any inconvenience :)
