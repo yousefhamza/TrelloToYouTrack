@@ -29,10 +29,6 @@ class Issue:
     def get_type(self):
         return self._type
 
-    @property
-    def get_priority(self):
-        return self._priority
-
     def __str__(self):
         return '(Name): {0}, (description): {1}, (type): {2}, (priority): {3}'.format(self._name,
                                                                               self._description,
