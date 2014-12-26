@@ -1,13 +1,10 @@
 __author__ = 'yousefhamza'
 
 import sys
+import urllib
 import urllib2
+import httplib2
 import json
-
-#Just in case youforgot to import.. only works with python 2.x
-sys.path.append('/Library/Python/{0}/site-packages/youtrack-rest-python-library/python'.format(sys.version[:3]))
-
-from youtrack.connection import Connection
 
 #code starts here..
 
@@ -33,6 +30,22 @@ class Issue:
         return '(Name): {0}, (description): {1}, (type): {2}, (priority): {3}'.format(self._name,
                                                                               self._description,
                                                                               self._type)
+
+def login(username, password, instance_name):
+    login_date = urllib.urlencode({'login': username, 'password': password})
+
+    http_req = httplib2.Http()
+
+    headers = {'Content-Length': str(len(login_date)), 'Connection': 'keep-alive',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cookie': ''}
+
+    response, content = http_req.request('http://{0}.myjetbrains.com/youtrack/rest'.format(instance_name) + "/user/login",
+            'POST',
+            headers= headers,
+            body=login_date)
+    return response['set-cookie']
+
 
 def getboardID(key, token, board_name):
 
@@ -89,14 +102,21 @@ def getIssuesArray(cards):
     return issues_array
 
 
-def ImportToYoutrack(username, password, youtrack_instance_name, project_id, issues_array):
+def ImportToYoutrack(username, password, youtrack_instance_name, project_id, issues_array, cookie):
 
-    youtrack_baseurl = 'http://{0}.myjetbrains.com/youtrack'.format(youtrack_instance_name)
+    youtrack_baseurl = 'http://{0}.myjetbrains.com/youtrack/rest/issue'.format(youtrack_instance_name)
 
-    YouTrack_Connection = Connection(youtrack_baseurl, username, password)
+    http_req2 = httplib2.Http()
+
+    headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Cookie': cookie}
 
     for issue in issues_array:
-        YouTrack_Connection.createIssue(project_id, username, issue.get_name, issue.get_description, type=issue.get_type)
+        data = urllib.urlencode({'project': project_id, 'summary': issue.get_name, 'description': issue.get_description,
+                                'type': issue.get_type})
+        headers['Content-Length']= str(len(data))
+
+        response, content = http_req2.request(youtrack_baseurl.encode('utf-8'), 'PUT', headers = headers, body=data)
+
 
 def main():
     if len(sys.argv) != 9:
@@ -112,13 +132,16 @@ def main():
     username = sys.argv[7]
     password = sys.argv[8]
 
+    print 'Loggin to Youtrack...'
+    cookie = login(username, password, instance_name)
+
+    print 'Getting Trello data...'
     board_ID = getboardID(key, token, board_name)
 
     #Couldn't get board_ID
     if board_ID == None:
         print 'Wrong board name: {0}'.format(board_name)
         return
-
 
     cards = getCards(key, token, list_name, board_ID)
 
@@ -129,7 +152,8 @@ def main():
 
     issues = getIssuesArray(cards)
 
-    ImportToYoutrack(username, password, instance_name, project_ID, issues)
+    print 'Making Youtrack issues....'
+    ImportToYoutrack(username, password, instance_name, project_ID, issues, cookie)
 
     print 'Done importing to youtrack :)'
 
