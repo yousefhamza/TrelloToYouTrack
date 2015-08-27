@@ -19,7 +19,7 @@ If you want to import all the board put list name as all.
 ## Hot to get Trello `key` and `token`
 1. Go to here https://trello.com/1/appKey/generate
 2. Save your `key`
-3. Go to here https://trello.com/1/authorize?response_type=token&scope=read&key=`key`
+3. Go to here https://trello.com/1/authorize?response_type=token&scope=read&key=KEY where **KEY** is your `key`
 4. Save your `token`
 
 
