@@ -10,8 +10,8 @@ import json
 
 class Issue:
     def __init__(self, card, type = None):
-        self._name = card['name']
-        self._description = card['desc']
+        self._name = card['name'].encode("utf-8")
+        self._description = card['desc'].encode("utf-8")
         self._type = 'Epic'
 
     @property
