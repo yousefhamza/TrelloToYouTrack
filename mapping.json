@@ -1,0 +1,22 @@
+{
+  "trello_key": "TRELLO_KEY",
+  "trello_token": "TRELLO_TOKEN",
+  "youtrack_login": "YOUTRACK_LOGIN",
+  "youtrack_password": "YOUTRACK_PASSWORD",
+  "users": true,
+  "comments": true,
+  "attachments": true,
+  "mappings" : {
+    "youtrack.summary": "trello.name",
+    "youtrack.description": "trello.desc",
+    "youtrack.state": {
+      "Open": {
+        "trello.closed": false
+      },
+      "Fixed": {
+        "trello.closed": true
+      }
+    },
+    "youtrack.updated": "trello.dateLastActivity"
+  }
+}

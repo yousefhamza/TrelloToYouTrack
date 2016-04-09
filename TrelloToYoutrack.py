@@ -1,12 +1,9 @@
-__author__ = 'yousefhamza'
-
 import sys
 import urllib
 import urllib2
 import httplib2
 import json
 
-#code starts here..
 
 class Issue:
     def __init__(self, card, type = None):
@@ -30,6 +27,7 @@ class Issue:
         return '(Name): {0}, (description): {1}, (type): {2}, (priority): {3}'.format(self._name,
                                                                               self._description,
                                                                               self._type)
+
 
 def login(username, password, instance_name):
     login_date = urllib.urlencode({'login': username, 'password': password})
@@ -58,6 +56,7 @@ def getboardID(key, token, board_name):
             return board['id']
     return None
 
+
 def getlistID(key, token, board_ID,list_name):
 
     request_URL = 'https://api.trello.com/1/boards/{0}/lists?key={1}&token={2}'.format(board_ID, key, token)
@@ -69,6 +68,7 @@ def getlistID(key, token, board_ID,list_name):
             return list['id']
 
     return None
+
 
 #lists can be board name or list name
 def getCards(key, token, list_name, board_ID):
@@ -90,6 +90,7 @@ def getCards(key, token, list_name, board_ID):
     cards = json.load(JSON_RESPONSE)
 
     return cards
+
 
 def getIssuesArray(cards):
 
@@ -157,5 +158,12 @@ def main():
 
     print 'Done importing to youtrack :)'
 
+from TtY.Migration import Migration
+
+
+def new_main():
+    with Migration("mapping.json", "specs.json") as test_string:
+        print test_string
+
 if __name__ == "__main__":
-    main()
+    new_main()
