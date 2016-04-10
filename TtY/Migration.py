@@ -21,7 +21,6 @@ class Migration:
 
     def validate_migration_dict(self):
         migration_dict = self.migration_dict
-
         # Check required keys
         for required_key in self.required:
             if not migration_dict.has_key(required_key):
@@ -31,6 +30,8 @@ class Migration:
         for migration_key in migration_dict.keys():
             if migration_key not in self.supported_keys:
                 raise Exception("Not recognized key %r" % (migration_key,))
+        if migration_dict["comments"] and migration_dict["comments"] is True and not migration_dict["users"] is True:
+            raise Exception("To import comments you need to import users too")
 
         # Validate mappings against specs
         mapping_dict = migration_dict["mappings"]

@@ -25,6 +25,10 @@ class MigrationTest(TestCase):
         self.migration_dict["mappings"]["blabla"] = "blabla"
         self.assertRaises(Exception, self.migration_obj.validate_migration_dict)
 
+    def test_if_comments_true_then_users_is_true(self):
+        self.migration_dict["users"] = False
+        self.assertRaises(Exception, self.migration_obj.validate_migration_dict)
+
     def test_key_and_values_are_of_equal_types(self):
         self.migration_dict["mappings"]["youtrack.summary"] = "trello.dateLastActivity"
         self.assertRaises(Exception, self.migration_obj.validate_migration_dict)
