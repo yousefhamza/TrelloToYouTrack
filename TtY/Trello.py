@@ -57,7 +57,7 @@ class Trello:
         if self.cards:
             return self.cards
         # TODO add fields to specs file
-        request_url = "https://api.trello.com/1/lists/%s/cards?fields=name,desc,closed,dateLastActivity" % \
+        request_url = "https://api.trello.com/1/lists/%s/cards?fields=name,desc,closed" % \
                       (self.trello_list_id,)
         if self.attachments:
             request_url += "&attachments=true"
