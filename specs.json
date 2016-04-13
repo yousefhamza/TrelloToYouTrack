@@ -22,6 +22,8 @@
     "youtrack.description": "unicode",
     "youtrack.state": ["Submitted", "Open", "In Progress", "To be discussed", "Reopened", "Can't reproduce",
                        "Duplicate", "Fixed", "Won't fix", "Incomplete", "Obsolete", "Verified"],
+    "youtrack.type": ["Bug", "Cosmetics", "Exception", "Feature", "Task", "Usability Problem",
+                      "Performance Problem", "Epic"],
     "trello.name": "unicode",
     "trello.desc": "unicode",
     "trello.closed": "bool"
