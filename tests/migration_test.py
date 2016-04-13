@@ -14,7 +14,7 @@ class MigrationTest(TestCase):
             self.fail()
 
     def test_missing_required_keys(self):
-        del self.migration_dict["trello_key"]
+        del self.migration_dict["trello.key"]
         self.assertRaises(Exception, self.migration_obj.validate_migration_dict)
 
     def test_not_recongized_key(self):

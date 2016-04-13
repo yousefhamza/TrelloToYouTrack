@@ -1,9 +1,12 @@
 {
   "required": [
-    "trello_key",
-    "trello_token",
-    "youtrack_login",
-    "youtrack_password"
+    "trello.key",
+    "trello.token",
+    "youtrack.login",
+    "youtrack.password",
+    "youtrack.link",
+    "trello.board",
+    "trello.list"
   ],
   "supported_keys": [
     "users",
