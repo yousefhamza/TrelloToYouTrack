@@ -6,9 +6,12 @@
     "youtrack.password",
     "youtrack.link",
     "trello.board",
-    "trello.list"
+    "trello.list",
+    "youtrack.project",
+    "youtrack.startNumberInProject"
   ],
   "supported_keys": [
+    "youtrack.subsystem",
     "users",
     "comments",
     "attachments",
@@ -19,10 +22,8 @@
     "youtrack.description": "unicode",
     "youtrack.state": ["Submitted", "Open", "In Progress", "To be discussed", "Reopened", "Can't reproduce",
                        "Duplicate", "Fixed", "Won't fix", "Incomplete", "Obsolete", "Verified"],
-    "youtrack.updated": "int",
     "trello.name": "unicode",
     "trello.desc": "unicode",
-    "trello.closed": "bool",
-    "trello.dateLastActivity": "int"
+    "trello.closed": "bool"
   }
 }

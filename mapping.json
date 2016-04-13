@@ -1,11 +1,13 @@
 {
   "trello.key": "TRELLO.KEY",
   "trello.token": "TRELLO.TOKEN",
+  "trello.board": "TRELLO.BOARD",
+  "trello.list": "TRELLO.LIST",
   "youtrack.login": "YOUTRACK.LOGIN",
   "youtrack.password": "YOUTRACK.PASSWORD",
   "youtrack.link": "YOUTRACK.LINK",
-  "trello.board": "TRELLO.BOARD",
-  "trello.list": "TRELLO.LIST",
+  "youtrack.project": "YOUTRACK.PROJECT",
+  "youtrack.startNumberInProject": 1,
   "users": true,
   "comments": true,
   "attachments": true,
@@ -19,7 +21,6 @@
       "Fixed": {
         "trello.closed": true
       }
-    },
-    "youtrack.updated": "trello.dateLastActivity"
+    }
   }
 }
