@@ -11,19 +11,20 @@ class YouTrack:
         self.youtrack_project = youtrack_project
         self.youtrack_subsystem = youtrack_subsystem
 
-    def import_issues(self, trello_cards, mapping_dict, number_in_project, attachments=False):
+    def import_issues(self, trello_cards, mapping_dict, number_in_project, attachments=False, comments=False):
         xml_string = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
         xml_string += '<issues>\n'
-        issues_strings, attachments_dict = self._issues_string(trello_cards, mapping_dict, attachments,
+        issues_strings, attachments_dict = self._issues_string(trello_cards, mapping_dict, attachments, comments,
                                                                number_in_project)
         xml_string += issues_strings
         xml_string += '</issues>'
 
-        import_url = '%s/rest/import/%s/issues' % (self.youtrack_link, self.youtrack_project)
+        import_url = '%s/rest/import/%s/issues?test=true' % (self.youtrack_link, self.youtrack_project)
         headers = {'Content-Type': 'application/xml'}
 
         response = requests.put(import_url, auth=(self.youtrack_login, self.youtrack_password),
                                 headers=headers, data=xml_string.decode('utf-8'))
+
         self._import_attachments(attachments_dict)
 
     def import_users(self, trello_users):
@@ -35,15 +36,15 @@ class YouTrack:
         xml_string += '</list>\n'
 
         headers = {'Content-Type': 'application/xml'}
-        response = requests.put(self.youtrack_link + "/rest/import/users?test=true", data=xml_string.decode('utf-8'),
+        response = requests.put(self.youtrack_link + "/rest/import/users", data=xml_string.decode('utf-8'),
                                 headers=headers, auth=(self.youtrack_login, self.youtrack_password))
 
-    def _issues_string(self, trello_cards, mapping_dict, attachments, number_in_project):
+    def _issues_string(self, trello_cards, mapping_dict, attachments, comments, number_in_project):
         issue_string = '\n'
         attachments_dict = dict()
         for card in trello_cards:
             issue_string += '<issue>\n'
-            issue_string += self._get_issue_fields(mapping_dict, card, number_in_project)
+            issue_string += self._get_issue_fields(mapping_dict, card, comments, number_in_project)
             issue_string += '</issue>\n'
             # TODO: refactor that attachment out of this method
             if attachments:
@@ -67,11 +68,16 @@ class YouTrack:
                                          files={'file': file_data},
                                          auth=(self.youtrack_login, self.youtrack_password))
 
-    def _get_issue_fields(self, mapping_dict, card, number_in_project):
+    def _get_issue_fields(self, mapping_dict, card, comments, number_in_project):
         fields = ''
         fields += self._field_string('created', self._time_now()) + '\n'
         fields += self._field_string('reporterName', self.youtrack_login) + '\n'
         fields += self._field_string('numberInProject', number_in_project) + '\n'
+        if card.has_key("members"):
+            fields += self._field_string('watcherName', [member["username"] for member in card["members"]], multi=True)
+        if comments:
+            fields += self._comments_fields(card)
+
         for mapping_key in mapping_dict.keys():
             mapping_value = mapping_dict[mapping_key]
             # TODO make sure that no trello. exist without being in the supported keys
@@ -99,11 +105,32 @@ class YouTrack:
         return fields
 
     @staticmethod
-    def _field_string(name, value):
-        return ('<field name="%s">\n'
-                '   <value>%s</value>\n'
-                '</field>' % (name, value))
+    def _field_string(name, value, multi=False):
+        if multi:
+            return (
+                '<field name="%s">' % (name,) +
+                '\n'.join(['   <value>%s</value>'  % (single_value, ) for single_value in value]) +
+                '</field>'
+            )
+        else:
+            return ('<field name="%s">\n'
+                    '   <value>%s</value>\n'
+                    '</field>' % (name, value))
+
+    @staticmethod
+    def _comments_fields(card):
+        return (
+            '\n'.join(['<comment author="%s" text="%s" created="%s"/>' %
+                       (comment["author"], comment["text"], YouTrack.time_to_epoch(comment["created"]))
+                       for comment in card["comments"]])
+        )
 
     @staticmethod
     def _time_now():
-        return int(datetime.now().strftime("%s")) * 1000
+        return str(int(datetime.now().strftime("%s")) * 1000)
+
+    @staticmethod
+    def time_to_epoch(date_string):
+        epoch = datetime(1970, 1, 1)
+        time_now = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+        return str(int((time_now - epoch).total_seconds()) * 1000)

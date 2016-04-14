@@ -40,16 +40,15 @@ class Trello:
         for user in response.json():
             member_request_url = "https://api.trello.com/1/members" \
                                  "/%s?fields=username,fullName,email,lala&key=%s&token=%s" % (user["username"],
-                                                                                         self.trello_key,
-                                                                                         self.trello_token)
+                                                                                              self.trello_key,
+                                                                                              self.trello_token)
             user_response = requests.get(member_request_url)
             user_dict = user_response.json()
-            users.append( {
+            users.append({
                 "username": user_dict["username"],
                 "fullName": user_dict["fullName"],
                 "email": user_dict["email"]
             })
-            print user_dict
         return users
 
     def get_cards(self):
@@ -57,7 +56,7 @@ class Trello:
         if self.cards:
             return self.cards
         # TODO add fields to specs file
-        request_url = "https://api.trello.com/1/lists/%s/cards?fields=name,desc,closed" % \
+        request_url = "https://api.trello.com/1/lists/%s/cards?fields?fields=all" % \
                       (self.trello_list_id,)
         if self.attachments:
             request_url += "&attachments=true"
@@ -66,7 +65,30 @@ class Trello:
         response = requests.get(request_url)
 
         self.cards = response.json()
-        return response.json()
+        if self.users:
+            self._get_members(self.cards)
+        if self.comments:
+            self._get_comments(self.cards)
+        return self.cards
+
+    def _get_members(self, cards):
+        for card in cards:
+            if card["idMembers"]:
+                members_response = requests.get('https://api.trello.com/1/cards/%s/members'
+                                                '?fields=username&key=%s&token=%s' % (card["id"],
+                                                                                      self.trello_key,
+                                                                                      self.trello_token))
+                card["members"] = members_response.json()
+
+    def _get_comments(self, cards):
+        for card in cards:
+            comments_response = requests.get("https://api.trello.com/1/cards/%s/actions?"
+                                             "filter=commentCard&key=%s&token=%s" % (card["id"],
+                                                                                     self.trello_key,
+                                                                                     self.trello_token))
+            comments = comments_response.json()
+            card["comments"] = [{"author": comment["memberCreator"]["username"], "created": comment["date"],
+                                 "text": comment["data"]["text"]} for comment in comments]
 
     def get_attachments_for_card(self, card_id):
         # TODO maybe checking can be done outside of here?

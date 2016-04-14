@@ -21,6 +21,7 @@ class Migration:
 
     def validate_migration_dict(self):
         migration_dict = self.migration_dict
+
         # Check required keys
         for required_key in self.required:
             if not migration_dict.has_key(required_key):
@@ -45,8 +46,8 @@ class Migration:
         if mapping_value in self.types.keys():
                 if not self.types[mapping_value] is self.types[mapping_key]:
                     raise Exception("%r and %r has different types %r %r" % (mapping_key, mapping_value,
-                                                                            self.types[mapping_key],
-                                                                            self.types[mapping_value]))
+                                                                             self.types[mapping_key],
+                                                                             self.types[mapping_value]))
                 if 'youtrack.' not in mapping_key or 'trello.' not in mapping_value:
                     raise Exception("Mapping keys should be youtrack and values trello, error key %r and value %r" %
                                     (mapping_key, mapping_dict[mapping_key]))
@@ -69,10 +70,11 @@ class Migration:
                                                                                      mapping_key,
                                                                                      self.types[mapping_key]))
 
-        elif not type(self.types[mapping_key]) is list and  not type(mapping_value) is self.types[mapping_key]:
+        elif not type(self.types[mapping_key]) is list and not type(mapping_value) is self.types[mapping_key]:
             raise Exception("%r is not of type %r" % (mapping_value, self.types[mapping_key]))
 
-    def _load_json(self, file_name):
+    @staticmethod
+    def _load_json(file_name):
         json_file = open(file_name)
         json_string = json_file.read()
         json_file.close()
