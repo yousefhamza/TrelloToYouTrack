@@ -19,7 +19,7 @@ class YouTrack:
         xml_string += issues_strings
         xml_string += '</issues>'
 
-        import_url = '%s/rest/import/%s/issues?test=true' % (self.youtrack_link, self.youtrack_project)
+        import_url = '%s/rest/import/%s/issues' % (self.youtrack_link, self.youtrack_project)
         headers = {'Content-Type': 'application/xml'}
 
         response = requests.put(import_url, auth=(self.youtrack_login, self.youtrack_password),
