@@ -26,6 +26,18 @@ class YouTrack:
                                 headers=headers, data=xml_string.decode('utf-8'))
         self._import_attachments(attachments_dict)
 
+    def import_users(self, trello_users):
+        xml_string = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        xml_string += '<list>\n'
+        xml_string += '\n'.join(['<user login="%s" fullName="%s" email="%s"/>'
+                                 % (user["username"], user["fullName"], "None" if not user["email"] else user["email"])
+                                 for user in trello_users])
+        xml_string += '</list>\n'
+
+        headers = {'Content-Type': 'application/xml'}
+        response = requests.put(self.youtrack_link + "/rest/import/users?test=true", data=xml_string.decode('utf-8'),
+                                headers=headers, auth=(self.youtrack_login, self.youtrack_password))
+
     def _issues_string(self, trello_cards, mapping_dict, attachments, number_in_project):
         issue_string = '\n'
         attachments_dict = dict()
@@ -33,6 +45,7 @@ class YouTrack:
             issue_string += '<issue>\n'
             issue_string += self._get_issue_fields(mapping_dict, card, number_in_project)
             issue_string += '</issue>\n'
+            # TODO: refactor that attachment out of this method
             if attachments:
                 card_attachments = []
                 for attachment in card["attachments"]:
@@ -85,10 +98,12 @@ class YouTrack:
             fields += self._field_string('subsystem', self.youtrack_subsystem) + '\n'
         return fields
 
-    def _field_string(self, name, value):
+    @staticmethod
+    def _field_string(name, value):
         return ('<field name="%s">\n'
                 '   <value>%s</value>\n'
                 '</field>' % (name, value))
 
-    def _time_now(self):
+    @staticmethod
+    def _time_now():
         return int(datetime.now().strftime("%s")) * 1000

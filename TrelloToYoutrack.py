@@ -11,11 +11,13 @@ def main():
 
         trello_client = Trello(migration_dict["trello.key"], migration_dict["trello.token"],
                                migration_dict["trello.board"], migration_dict["trello.list"],
-                               attachments=attachments, users=users,comments=comments)
+                               attachments=attachments, users=users, comments=comments)
 
         youtrack_client = YouTrack(migration_dict["youtrack.login"], migration_dict["youtrack.password"],
                                    migration_dict["youtrack.link"], migration_dict["youtrack.project"])
 
+        if users:
+            youtrack_client.import_users(trello_client.get_users())
         youtrack_client.import_issues(trello_client.get_cards(), migration_dict["mappings"],
                                       int(migration_dict["youtrack.startNumberInProject"]),
                                       attachments=attachments)
