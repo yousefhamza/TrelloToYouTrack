@@ -8,33 +8,33 @@ Edit 'mapping.json' to your own needs and supply your own credentials
 
 The rules for this file:
 - All required fields should be there which are:
--  - trello.key
--  - trello.token
--  - youtrack.login
--  - youtrack.password
--  - youtrack.link
--  - trello.board
--  - trello.list
--  - youtrack.project
--  - youtrack.startNumberInProject"
+    - trello.key
+    - trello.token
+    - youtrack.login
+    - youtrack.password
+    - youtrack.link
+    - trello.board
+    - trello.list
+    - youtrack.project
+    - youtrack.startNumberInProject"
 - Some general information
--  - youtrack.subsystem 
--  - users 
--  - comments 
--  - attachments
+    - youtrack.subsystem
+    - users
+    - comments
+    - attachments
 - Mappings
--  - You can map field to field, or field to static value
--  - The key field has to be youtrack and field value to be trello only
--  - You can map to static values best on conditions with value of key as a dictionary
+    - You can map field to field, or field to static value
+    - The key field has to be youtrack and field value to be trello only
+    - You can map to static values best on conditions with value of key as a dictionary
 where values are the keys and the values are object containing the conditions, check 'mapping.json' for example.
--  - Keys:
--  -  - youtrack.summary
--  -  - youtrack.description
--  -  - youtrack.state
--  -  - youtrack.type
--  -  - trello.name
--  -  - trello.desc
--  -  - trello.closed
+    - Keys:
+        - youtrack.summary
+        - youtrack.description
+        - youtrack.state
+        - youtrack.type
+        - trello.name
+        - trello.desc
+        - trello.closed
 
 How to run:
 
