@@ -1,3 +1,4 @@
+# coding=UTf-8
 from datetime import datetime
 import requests
 
@@ -25,7 +26,10 @@ class YouTrack:
         response = requests.put(import_url, auth=(self.youtrack_login, self.youtrack_password),
                                 headers=headers, data=xml_string.decode('utf-8'))
 
+        print '√ Done Importing cards to Youtrack'
+        print 'Importing attachments...'
         self._import_attachments(attachments_dict)
+        print '√ Done importing attachment'
 
     def import_users(self, trello_users):
         xml_string = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
@@ -74,7 +78,7 @@ class YouTrack:
         fields += self._field_string('reporterName', self.youtrack_login) + '\n'
         fields += self._field_string('numberInProject', number_in_project) + '\n'
         if card.has_key("members"):
-            fields += self._field_string('watcherName', [member["username"] for member in card["members"]], multi=True)
+            fields += self._field_string('watcherName', *[member["username"] for member in card["members"]])
         if comments:
             fields += self._comments_fields(card)
 
@@ -105,24 +109,19 @@ class YouTrack:
         return fields
 
     @staticmethod
-    def _field_string(name, value, multi=False):
-        if multi:
-            return (
-                '<field name="%s">' % (name,) +
-                '\n'.join(['   <value>%s</value>'  % (single_value, ) for single_value in value]) +
-                '</field>'
-            )
-        else:
-            return ('<field name="%s">\n'
-                    '   <value>%s</value>\n'
-                    '</field>' % (name, value))
+    def _field_string(name, *value):
+        return (
+            '<field name="%s">' % (name,) +
+            '\n'.join('   <value>%s</value>' % (single_value, ) for single_value in value) +
+            '</field>'
+        )
 
     @staticmethod
     def _comments_fields(card):
         return (
-            '\n'.join(['<comment author="%s" text="%s" created="%s"/>' %
-                       (comment["author"], comment["text"], YouTrack.time_to_epoch(comment["created"]))
-                       for comment in card["comments"]])
+            '\n'.join('<comment author="%s" text="%s" created="%s"/>' %
+                      (comment["author"], comment["text"], YouTrack.time_to_epoch(comment["created"]))
+                      for comment in card["comments"])
         )
 
     @staticmethod

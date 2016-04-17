@@ -56,12 +56,12 @@ class Migration:
 
         elif type(self.types[mapping_key]) is list and type(mapping_value) is dict:
             values_dict = mapping_value
-            for value in values_dict.keys():
+            for value in values_dict:
                 if value not in self.types[mapping_key]:
                     raise Exception("Not valid value %r for key %r" % (value, mapping_key))
 
                 conditions_dict = values_dict[value]
-                for key in conditions_dict.keys():
+                for key in conditions_dict:
                     if key not in self.types.keys():
                         raise Exception("Not recognized mapping key %r" % (key,))
                     elif not type(values_dict[value][key]) is self.types[key]:
