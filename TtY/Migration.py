@@ -28,18 +28,20 @@ class Migration:
                 raise Exception("Missing required field %r" % (required_key,))
 
         # Check Supported keys
-        for migration_key in migration_dict.keys():
-            if migration_key not in self.supported_keys:
-                raise Exception("Not recognized key %r" % (migration_key,))
-        if migration_dict["comments"] and migration_dict["comments"] is True and not migration_dict["users"] is True:
-            raise Exception("To import comments you need to import users too")
+        if set(self.migration_dict) & set(self.supported_keys) != set(self.migration_dict):
+            raise Exception("Not recognized key in 'mapping.json'")
+
+        # Assure that if you want to import comments you import users too
+        if migration_dict.get("comments", False) and not migration_dict.get("users", False) is True:
+            raise Exception("To import comments you need to import users too. Edit 'mapping.json' accordingly")
 
         # Validate mappings against specs
         mapping_dict = migration_dict["mappings"]
-        for mapping_key in mapping_dict.keys():
-            if mapping_key not in self.types.keys():
-                raise Exception("Not recognized mapping key %r" % (mapping_key,))
-            mapping_value = mapping_dict[mapping_key]
+        if set(mapping_dict) & set(self.types) != set(mapping_dict):
+            raise Exception("Not recognized mapping key in mappings in 'mapping.json'")
+
+        # Validate types
+        for mapping_key, mapping_value in mapping_dict.iteritems():
             self._verify_keys_and_values_types(mapping_key, mapping_value, mapping_dict)
 
     def _verify_keys_and_values_types(self, mapping_key, mapping_value, mapping_dict):
@@ -53,16 +55,17 @@ class Migration:
                                     (mapping_key, mapping_dict[mapping_key]))
 
         elif type(self.types[mapping_key]) is list and type(mapping_value) is dict:
-            conditions_dict = mapping_value
-            for condition_value in conditions_dict.keys():
-                if condition_value not in self.types[mapping_key]:
-                    raise Exception("Not valid value %r for key %r" % (condition_value, mapping_key))\
+            values_dict = mapping_value
+            for value in values_dict.keys():
+                if value not in self.types[mapping_key]:
+                    raise Exception("Not valid value %r for key %r" % (value, mapping_key))
 
-                for key in conditions_dict[condition_value].keys():
+                conditions_dict = values_dict[value]
+                for key in conditions_dict.keys():
                     if key not in self.types.keys():
                         raise Exception("Not recognized mapping key %r" % (key,))
-                    elif not type(conditions_dict[condition_value][key]) is self.types[key]:
-                            raise Exception("%r is not of type %r" % (conditions_dict[condition_value][key],
+                    elif not type(values_dict[value][key]) is self.types[key]:
+                            raise Exception("%r is not of type %r" % (values_dict[value][key],
                                                                       self.types[key]))
 
         elif type(self.types[mapping_key]) is list and mapping_value not in self.types[mapping_key]:
