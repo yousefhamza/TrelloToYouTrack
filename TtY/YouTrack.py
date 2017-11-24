@@ -120,7 +120,7 @@ class YouTrack:
     def _comments_fields(card):
         return (
             '\n'.join('<comment author="%s" text="%s" created="%s"/>' %
-                      (comment["author"], comment["text"], YouTrack.time_to_epoch(comment["created"]))
+                      (comment["author"], comment["text"].replace('"', '\''), YouTrack.time_to_epoch(comment["created"]))
                       for comment in card["comments"])
         )
 
