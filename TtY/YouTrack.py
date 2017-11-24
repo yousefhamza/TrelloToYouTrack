@@ -24,7 +24,7 @@ class YouTrack:
         headers = {'Content-Type': 'application/xml'}
 
         response = requests.put(import_url, auth=(self.youtrack_login, self.youtrack_password),
-                                headers=headers, data=xml_string.decode('utf-8'))
+                                headers=headers, data=xml_string.encode('utf-8'))
 
         print '√ Done Importing cards to Youtrack'
         print 'Importing attachments...'
@@ -120,7 +120,7 @@ class YouTrack:
     def _comments_fields(card):
         return (
             '\n'.join('<comment author="%s" text="%s" created="%s"/>' %
-                      (comment["author"], comment["text"], YouTrack.time_to_epoch(comment["created"]))
+                      (comment["author"], comment["text"].replace('"', '\''), YouTrack.time_to_epoch(comment["created"]))
                       for comment in card["comments"])
         )
 
