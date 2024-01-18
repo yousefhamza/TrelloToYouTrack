@@ -1,3 +1,5 @@
+:warning: **Warning:** This API is deprecated. It relies on Trello's deprecated API features and is built with Python 2.7, which is no longer actively maintained. For more details, see the issue on [YouTrack](https://youtrack.jetbrains.com/issue/RDOC-921/Import-from-Trello).
+
 # Trello to Youtrack migration script
 
 The scripts here to provide a way to import from Trello to Youtrack as easy and as quick as possible
